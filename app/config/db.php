@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SQLite PDO Database Connection
  * This file:
@@ -9,10 +10,10 @@
  */
 
 function getDB(): PDO
-    /*The function returns a PDO object, which is ang ating database connection
+/*The function returns a PDO object, which is ang ating database connection
       This ensures the entire project uses ONE shared connection*/
 {
-    static $pdo = null; 
+    static $pdo = null;
     /* static means the variable remembers its value between function calls,
         It prevents the database from reconnecting multiple times*/
 
@@ -26,7 +27,9 @@ function getDB(): PDO
 
 
     // Path to database file
-    $dbPath = __DIR__ . '/../../database/database.db';
+    //$dbPath = __DIR__ . '/../../database/database.db';
+
+    $dbPath = dirname(__DIR__, 2) . '/database/database.db';
 
     // Create directory if missing
     if (!file_exists(dirname($dbPath))) {
@@ -78,7 +81,8 @@ function getDB(): PDO
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             created_at TEXT NOT NULL
         )
@@ -113,7 +117,7 @@ function getDB(): PDO
                 ON UPDATE CASCADE
         )
     ");
-        /*  Creates tasks table if not already created
+    /*  Creates tasks table if not already created
             user_id links tasks to the user
             Cascades:
                 When user is deleted → tasks are deleted
@@ -127,4 +131,3 @@ function getDB(): PDO
     return $pdo;
     //Sends the PDO connection back to the caller
 }
-?>
